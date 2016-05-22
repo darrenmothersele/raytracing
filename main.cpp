@@ -8,9 +8,11 @@
 #include "Camera.h"
 #include "DiffuseMaterial.h"
 #include "MetalMaterial.h"
+#include "DielectricMaterial.h"
 
 #define WIDTH 200
 #define HEIGHT 100
+#define BITS_PER_PIXEL 24
 #define NUM_RAYS 100
 
 typedef FIBITMAP Image;
@@ -47,22 +49,21 @@ int main() {
     FreeImage_Initialise();
     cout << FreeImage_GetCopyrightMessage() << endl;
 
-    // 200x100 image with 24 bits per pixel
-    Image * image = FreeImage_Allocate(WIDTH, HEIGHT, 24);
+    Image * image = FreeImage_Allocate(WIDTH, HEIGHT, BITS_PER_PIXEL);
     if (!image) exit(EXIT_FAILURE);
 
     Colour colour;
 
-    auto diffuse1 = make_shared<DiffuseMaterial>(Vec3(0.8, 0.3, 0.3));
+    auto diffuse1 = make_shared<DiffuseMaterial>(Vec3(0.1, 0.2, 0.5));
     auto diffuse2 = make_shared<DiffuseMaterial>(Vec3(0.8, 0.8, 0.0));
-    auto metal1 = make_shared<MetalMaterial>(Vec3(0.8, 0.6, 0.2), 1.0);
-    auto metal2 = make_shared<MetalMaterial>(Vec3(0.8, 0.8, 0.8), 0.2);
+    auto metal1 = make_shared<MetalMaterial>(Vec3(0.8, 0.6, 0.2), 0.1);
+    auto glass = make_shared<DielectricMaterial>(1.5);
 
     HitableList *world = new HitableList();
     world->addItem(make_shared<Sphere>(Vec3{0,0,-1}, 0.5f, diffuse1));
     world->addItem(make_shared<Sphere>(Vec3{0,-100.5,-1}, 100.f, diffuse2));
     world->addItem(make_shared<Sphere>(Vec3{1,0,-1}, 0.5f, metal1));
-    world->addItem(make_shared<Sphere>(Vec3{-1,0,-1}, 0.5f, metal2));
+    world->addItem(make_shared<Sphere>(Vec3{-1,0,-1}, 0.5f, glass));
 
     Camera cam;
 
