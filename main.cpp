@@ -28,7 +28,8 @@ Vec3 getColour(const Ray& r, Hitable *world)
     HitRecord rec;
     if (world->hit(r, 0.0, MAXFLOAT, rec))
     {
-        return 0.5f * Vec3(rec.normal.x + 1, rec.normal.y + 1, rec.normal.z + 1);
+        Vec3 target = rec.p + rec.normal + randomInUnitSphere();
+        return 0.5f * getColour(Ray(rec.p, target - rec.p), world);
     }
     return backgroundColour(r);
 }
