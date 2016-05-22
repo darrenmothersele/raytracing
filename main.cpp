@@ -20,8 +20,12 @@ Vec3 backgroundColour(const Ray& r)
 
 Vec3 getColour(const Ray& r)
 {
-    if (r.hitSphere({0, 0, -1}, 0.5))
-        return {1, 0, 0};
+    float t = r.hitSphere(Vec3(0, 0, -1), 0.5);
+    if (t > 0.0)
+    {
+        Vec3 N = unitVector(r.p(t) - Vec3(0, 0, -1));
+        return 0.5f * Vec3(N.x + 1, N.y + 1, N.z + 1);
+    }
     return backgroundColour(r);
 }
 
