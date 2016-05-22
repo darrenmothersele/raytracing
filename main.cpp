@@ -6,6 +6,8 @@
 #include "HitableList.h"
 #include "Random.h"
 #include "Camera.h"
+#include "DiffuseMaterial.h"
+#include "MetalMaterial.h"
 
 #define WIDTH 200
 #define HEIGHT 100
@@ -23,13 +25,18 @@ Vec3 backgroundColour(const Ray& r)
     return (1.0f - t) * Vec3(1.0, 1.0, 1.0) + t * Vec3(0.5, 0.7, 1.0);
 }
 
-Vec3 getColour(const Ray& r, Hitable *world)
+Vec3 getColour(const Ray& r, Hitable *world, int depth)
 {
     HitRecord rec;
-    if (world->hit(r, 0.0, MAXFLOAT, rec))
+    if (world->hit(r, 0.001, MAXFLOAT, rec))
     {
-        Vec3 target = rec.p + rec.normal + randomInUnitSphere();
-        return 0.5f * getColour(Ray(rec.p, target - rec.p), world);
+        Ray scattered;
+        Vec3 attenuation;
+        if (depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered))
+        {
+            return attenuation * getColour(scattered, world, depth + 1);
+        }
+        return Vec3{0,0,0};
     }
     return backgroundColour(r);
 }
@@ -46,9 +53,16 @@ int main() {
 
     Colour colour;
 
+    auto diffuse1 = make_shared<DiffuseMaterial>(Vec3(0.8, 0.3, 0.3));
+    auto diffuse2 = make_shared<DiffuseMaterial>(Vec3(0.8, 0.8, 0.0));
+    auto metal1 = make_shared<MetalMaterial>(Vec3(0.8, 0.6, 0.2), 1.0);
+    auto metal2 = make_shared<MetalMaterial>(Vec3(0.8, 0.8, 0.8), 0.2);
+
     HitableList *world = new HitableList();
-    world->addItem(std::make_shared<Sphere>(Vec3{0,0,-1}, 0.5f));
-    world->addItem(std::make_shared<Sphere>(Vec3{0,-100.5,-1}, 100.f));
+    world->addItem(make_shared<Sphere>(Vec3{0,0,-1}, 0.5f, diffuse1));
+    world->addItem(make_shared<Sphere>(Vec3{0,-100.5,-1}, 100.f, diffuse2));
+    world->addItem(make_shared<Sphere>(Vec3{1,0,-1}, 0.5f, metal1));
+    world->addItem(make_shared<Sphere>(Vec3{-1,0,-1}, 0.5f, metal2));
 
     Camera cam;
 
@@ -63,7 +77,7 @@ int main() {
                 float v = float(y + dRan()) / float(HEIGHT);
                 Ray r = cam.getRay(u, v);
                 Vec3 p = r.p(2.0);
-                col += getColour(r, world);
+                col += getColour(r, world, 0);
             }
             col /= float(NUM_RAYS);
             col = Vec3(sqrt(col.r), sqrt(col.g), sqrt(col.b));

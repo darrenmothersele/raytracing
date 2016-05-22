@@ -14,6 +14,7 @@ class Ray
     Vec3 direction;
 
 public:
+    Ray() {}
     Ray(const Vec3& a, const Vec3& b)
     {
         origin = a;

@@ -7,11 +7,14 @@
 
 #include "Ray.h"
 
+class Material;
+
 struct HitRecord
 {
     float t;
     Vec3 p;
     Vec3 normal;
+    std::shared_ptr<Material> mat_ptr;
 };
 
 class Hitable

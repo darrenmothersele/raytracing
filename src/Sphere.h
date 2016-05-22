@@ -6,14 +6,16 @@
 #define RAY0_SPHERE_H
 
 #include "Hitable.h"
+#include "Material.h"
 
 class Sphere : public Hitable
 {
     Vec3 center;
     float radius;
+    std::shared_ptr<Material> matPtr;
 
 public:
-    Sphere(Vec3 c, float r) : center(c), radius(r) {};
+    Sphere(Vec3 c, float r, std::shared_ptr<Material> m) : center(c), radius(r), matPtr(m) {};
     virtual bool hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const override;
 };
 
@@ -32,6 +34,7 @@ bool Sphere::hit(const Ray &r, float tMin, float tMax, HitRecord &rec) const
             rec.t = temp;
             rec.p = r.p(temp);
             rec.normal = (rec.p - center) / radius;
+            rec.mat_ptr = matPtr;
             return true;
         }
         temp = (-b + sqrt(discriminant)) / a;
@@ -40,6 +43,7 @@ bool Sphere::hit(const Ray &r, float tMin, float tMax, HitRecord &rec) const
             rec.t = temp;
             rec.p = r.p(temp);
             rec.normal = (rec.p - center) / radius;
+            rec.mat_ptr = matPtr;
             return true;
         }
     }
