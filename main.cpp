@@ -18,6 +18,13 @@ Vec3 backgroundColour(const Ray& r)
     return (1.0f - t) * Vec3(1.0, 1.0, 1.0) + t * Vec3(0.5, 0.7, 1.0);
 }
 
+Vec3 getColour(const Ray& r)
+{
+    if (r.hitSphere({0, 0, -1}, 0.5))
+        return {1, 0, 0};
+    return backgroundColour(r);
+}
+
 int main() {
 
     FreeImage_Initialise();
@@ -41,7 +48,7 @@ int main() {
             float v = y / float(HEIGHT);
 
             Ray r(origin, lowerLeftCorner + (u * horizontal) + (v * vertical));
-            Vec3 col = backgroundColour(r);
+            Vec3 col = getColour(r);
 
             colour.rgbRed = (unsigned char)(col.r * 255);
             colour.rgbGreen = (unsigned char)(col.g * 255);
