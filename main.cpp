@@ -4,9 +4,12 @@
 #include "Ray.h"
 #include "Sphere.h"
 #include "HitableList.h"
+#include "Random.h"
+#include "Camera.h"
 
 #define WIDTH 200
 #define HEIGHT 100
+#define NUM_RAYS 100
 
 typedef FIBITMAP Image;
 typedef RGBQUAD Colour;
@@ -30,6 +33,7 @@ Vec3 getColour(const Ray& r, Hitable *world)
     return backgroundColour(r);
 }
 
+
 int main() {
 
     FreeImage_Initialise();
@@ -37,27 +41,30 @@ int main() {
 
     // 200x100 image with 24 bits per pixel
     Image * image = FreeImage_Allocate(WIDTH, HEIGHT, 24);
-    Colour colour;
-
-    Vec3 lowerLeftCorner(-2.0, -1.0, -1.0);
-    Vec3 horizontal(4.0, 0.0, 0.0);
-    Vec3 vertical(0.0, 2.0, 0.0);
-    Vec3 origin(0.0, 0.0, 0.0);
-
     if (!image) exit(EXIT_FAILURE);
+
+    Colour colour;
 
     HitableList *world = new HitableList();
     world->addItem(std::make_shared<Sphere>(Vec3{0,0,-1}, 0.5f));
     world->addItem(std::make_shared<Sphere>(Vec3{0,-100.5,-1}, 100.f));
 
+    Camera cam;
+
     for (unsigned int x = 0; x < WIDTH; x++)
         for (unsigned int y = 0; y < HEIGHT; y++)
         {
-            float u = x / float(WIDTH);
-            float v = y / float(HEIGHT);
 
-            Ray r(origin, lowerLeftCorner + (u * horizontal) + (v * vertical));
-            Vec3 col = getColour(r, world);
+            Vec3 col{0,0,0};
+            for (int s = 0; s < NUM_RAYS; s++)
+            {
+                float u = float(x + dRan()) / float(WIDTH);
+                float v = float(y + dRan()) / float(HEIGHT);
+                Ray r = cam.getRay(u, v);
+                Vec3 p = r.p(2.0);
+                col += getColour(r, world);
+            }
+            col /= float(NUM_RAYS);
 
             colour.rgbRed = (unsigned char)(col.r * 255);
             colour.rgbGreen = (unsigned char)(col.g * 255);
