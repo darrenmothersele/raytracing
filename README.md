@@ -7,4 +7,4 @@ tutorial. But with some changes I've made along way:
 
  - Chapter 1: I've used [FreeImage](http://freeimage.sourceforge.net/) to output a PNG file, rather than writing out RGB data as PPM file.
  - Chapter 2: I'm using [OpenGL Math library](http://glm.g-truc.net/), rather than implementing my own Vector class.
-
+ - Chapter 3: Simple ray and background gradient
