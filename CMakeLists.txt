@@ -8,7 +8,7 @@ set(FREEIMAGE_FIND_REQUIRED, TRUE)
 find_package(freeimage)
 include_directories(SYSTEM ${FREEIMAGE_INCLUDE_DIRS})
 
-
+find_package(GLM REQUIRED)
 
 set(SOURCE_FILES main.cpp)
 add_executable(ray0 ${SOURCE_FILES})

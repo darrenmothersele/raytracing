@@ -1,11 +1,13 @@
 #include <iostream>
-#include "FreeImage.h"
+#include <FreeImage.h>
+#include <glm/vec3.hpp>
 
 #define WIDTH 200
 #define HEIGHT 100
 
 typedef FIBITMAP Image;
 typedef RGBQUAD Colour;
+typedef glm::vec3 Vec3;
 
 using namespace std;
 
@@ -20,12 +22,13 @@ int main() {
 
     if (!image) exit(EXIT_FAILURE);
 
-    for (int x = 0; x < WIDTH; x++)
-        for (int y = 0; y < HEIGHT; y++)
+    for (unsigned int x = 0; x < WIDTH; x++)
+        for (unsigned int y = 0; y < HEIGHT; y++)
         {
-            colour.rgbRed = float(x) / float(WIDTH) * 255.0;
-            colour.rgbGreen = float(y) / float(HEIGHT) * 255.0;
-            colour.rgbBlue = 0.2 * 255.0;
+            Vec3 col(x / float(WIDTH), y / float(HEIGHT), 0.2f);
+            colour.rgbRed = (unsigned char)(col.r * 255);
+            colour.rgbGreen = (unsigned char)(col.g * 255);
+            colour.rgbBlue = (unsigned char)(col.b * 255);
             FreeImage_SetPixelColor(image, x, y, &colour);
         }
 
