@@ -2,6 +2,8 @@
 #include <FreeImage.h>
 #include "Vec3.h"
 #include "Ray.h"
+#include "Sphere.h"
+#include "HitableList.h"
 
 #define WIDTH 200
 #define HEIGHT 100
@@ -18,13 +20,12 @@ Vec3 backgroundColour(const Ray& r)
     return (1.0f - t) * Vec3(1.0, 1.0, 1.0) + t * Vec3(0.5, 0.7, 1.0);
 }
 
-Vec3 getColour(const Ray& r)
+Vec3 getColour(const Ray& r, Hitable *world)
 {
-    float t = r.hitSphere(Vec3(0, 0, -1), 0.5);
-    if (t > 0.0)
+    HitRecord rec;
+    if (world->hit(r, 0.0, MAXFLOAT, rec))
     {
-        Vec3 N = unitVector(r.p(t) - Vec3(0, 0, -1));
-        return 0.5f * Vec3(N.x + 1, N.y + 1, N.z + 1);
+        return 0.5f * Vec3(rec.normal.x + 1, rec.normal.y + 1, rec.normal.z + 1);
     }
     return backgroundColour(r);
 }
@@ -45,6 +46,10 @@ int main() {
 
     if (!image) exit(EXIT_FAILURE);
 
+    HitableList *world = new HitableList();
+    world->addItem(std::make_shared<Sphere>(Vec3{0,0,-1}, 0.5f));
+    world->addItem(std::make_shared<Sphere>(Vec3{0,-100.5,-1}, 100.f));
+
     for (unsigned int x = 0; x < WIDTH; x++)
         for (unsigned int y = 0; y < HEIGHT; y++)
         {
@@ -52,7 +57,7 @@ int main() {
             float v = y / float(HEIGHT);
 
             Ray r(origin, lowerLeftCorner + (u * horizontal) + (v * vertical));
-            Vec3 col = getColour(r);
+            Vec3 col = getColour(r, world);
 
             colour.rgbRed = (unsigned char)(col.r * 255);
             colour.rgbGreen = (unsigned char)(col.g * 255);
