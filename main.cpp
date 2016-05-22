@@ -66,6 +66,7 @@ int main() {
                 col += getColour(r, world);
             }
             col /= float(NUM_RAYS);
+            col = Vec3(sqrt(col.r), sqrt(col.g), sqrt(col.b));
 
             colour.rgbRed = (unsigned char)(col.r * 255);
             colour.rgbGreen = (unsigned char)(col.g * 255);
