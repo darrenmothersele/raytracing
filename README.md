@@ -10,3 +10,7 @@ tutorial. But with some changes I've made along way:
  - Chapter 3: Simple ray and background gradient
  - Chapter 4: Added single red sphere
  - Chapter 5: Surface normals and multiple objects
+ - Chapter 6: Anti-aliasing
+ - Chapter 7: Diffuse Materials
+ - Chapter 8: Metal
+
