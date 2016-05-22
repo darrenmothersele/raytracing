@@ -1,15 +1,22 @@
 #include <iostream>
 #include <FreeImage.h>
-#include <glm/vec3.hpp>
+#include "Vec3.h"
+#include "Ray.h"
 
 #define WIDTH 200
 #define HEIGHT 100
 
 typedef FIBITMAP Image;
 typedef RGBQUAD Colour;
-typedef glm::vec3 Vec3;
 
 using namespace std;
+
+Vec3 backgroundColour(const Ray& r)
+{
+    Vec3 unitD = unitVector(r.getDirection());
+    float t = 0.5f * (unitD.y + 1.0f);
+    return (1.0f - t) * Vec3(1.0, 1.0, 1.0) + t * Vec3(0.5, 0.7, 1.0);
+}
 
 int main() {
 
@@ -20,12 +27,22 @@ int main() {
     Image * image = FreeImage_Allocate(WIDTH, HEIGHT, 24);
     Colour colour;
 
+    Vec3 lowerLeftCorner(-2.0, -1.0, -1.0);
+    Vec3 horizontal(4.0, 0.0, 0.0);
+    Vec3 vertical(0.0, 2.0, 0.0);
+    Vec3 origin(0.0, 0.0, 0.0);
+
     if (!image) exit(EXIT_FAILURE);
 
     for (unsigned int x = 0; x < WIDTH; x++)
         for (unsigned int y = 0; y < HEIGHT; y++)
         {
-            Vec3 col(x / float(WIDTH), y / float(HEIGHT), 0.2f);
+            float u = x / float(WIDTH);
+            float v = y / float(HEIGHT);
+
+            Ray r(origin, lowerLeftCorner + (u * horizontal) + (v * vertical));
+            Vec3 col = backgroundColour(r);
+
             colour.rgbRed = (unsigned char)(col.r * 255);
             colour.rgbGreen = (unsigned char)(col.g * 255);
             colour.rgbBlue = (unsigned char)(col.b * 255);

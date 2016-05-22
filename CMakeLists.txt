@@ -10,6 +10,8 @@ include_directories(SYSTEM ${FREEIMAGE_INCLUDE_DIRS})
 
 find_package(GLM REQUIRED)
 
+include_directories(src)
+
 set(SOURCE_FILES main.cpp)
 add_executable(ray0 ${SOURCE_FILES})
 target_link_libraries(ray0 ${FREEIMAGE_LIBRARIES})
