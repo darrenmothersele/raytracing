@@ -9,6 +9,7 @@
 #include "DiffuseMaterial.h"
 #include "MetalMaterial.h"
 #include "DielectricMaterial.h"
+#include <chrono>
 
 #define WIDTH 200
 #define HEIGHT 100
@@ -67,6 +68,8 @@ int main() {
 
     Camera cam;
 
+    cout << "Rendering..." << endl;
+    auto start = chrono::steady_clock::now();
     for (unsigned int x = 0; x < WIDTH; x++)
         for (unsigned int y = 0; y < HEIGHT; y++)
         {
@@ -88,7 +91,9 @@ int main() {
             colour.rgbBlue = (unsigned char)(col.b * 255);
             FreeImage_SetPixelColor(image, x, y, &colour);
         }
-
+    auto end = chrono::steady_clock::now();
+    auto diff = end - start;
+    cout << "Render time = " << chrono::duration <double, milli> (diff).count() / 1000.0 << "s" << endl;
 
     if (FreeImage_Save(FIF_PNG, image, "output.png", 0))
         cout << "Image saved!" << endl;
