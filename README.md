@@ -13,4 +13,6 @@ tutorial. But with some changes I've made along way:
  - Chapter 6: Anti-aliasing
  - Chapter 7: Diffuse Materials
  - Chapter 8: Metal
-
+ - Chapter 9: Dielectrics (glass)
+ - Chapter 10: Positionable camera
+ - Chapter 11: De-focus blur (depth of field)
