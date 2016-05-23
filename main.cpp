@@ -70,7 +70,7 @@ int main() {
     Vec3 lookAt{0,0,-1};
     float distToFocus = (cameraPos - lookAt).length();
     cout << "Focus distance = " << distToFocus << endl;
-    float aperture = 2.0;
+    float aperture = 0.001;
     Camera cam{cameraPos, lookAt, Vec3{0,1,0}, 20, float(WIDTH)/float(HEIGHT), aperture, distToFocus};
 
     cout << "Rendering..." << endl;
