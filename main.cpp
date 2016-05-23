@@ -55,13 +55,16 @@ int main() {
 
     Colour colour;
 
-    auto diffuse1 = make_shared<DiffuseMaterial>(Vec3(0.0, 0.0, 1.0));
-    auto diffuse2 = make_shared<DiffuseMaterial>(Vec3(1.0, 0.0, 0.0));
+    auto diffuse1 = make_shared<DiffuseMaterial>(Vec3(0.1, 0.2, 0.5));
+    auto diffuse2 = make_shared<DiffuseMaterial>(Vec3(0.8, 0.8, 0.0));
+    auto metal1 = make_shared<MetalMaterial>(Vec3(0.8, 0.6, 0.2), 0.1);
+    auto glass = make_shared<DielectricMaterial>(1.5);
 
     HitableList *world = new HitableList();
-    float R = (float) cos(M_PI/4);
-    world->addItem(make_shared<Sphere>(Vec3{-R,0,-1}, R, diffuse1));
-    world->addItem(make_shared<Sphere>(Vec3{ R,0,-1}, R, diffuse2));
+    world->addItem(make_shared<Sphere>(Vec3{0,0,-1}, 0.5f, diffuse1));
+    world->addItem(make_shared<Sphere>(Vec3{0,-100.5,-1}, 100.f, diffuse2));
+    world->addItem(make_shared<Sphere>(Vec3{1,0,-1}, 0.5f, metal1));
+    world->addItem(make_shared<Sphere>(Vec3{-1,0,-1}, 0.5f, glass));
 
     Camera cam{90, float(WIDTH)/float(HEIGHT)};
 
