@@ -1,5 +1,6 @@
 #include <iostream>
 #include <FreeImage.h>
+#include <chrono>
 #include "Vec3.h"
 #include "Ray.h"
 #include "Sphere.h"
@@ -9,7 +10,6 @@
 #include "DiffuseMaterial.h"
 #include "MetalMaterial.h"
 #include "DielectricMaterial.h"
-#include <chrono>
 
 #define WIDTH 200
 #define HEIGHT 100
@@ -66,7 +66,12 @@ int main() {
     world->addItem(make_shared<Sphere>(Vec3{1,0,-1}, 0.5f, metal1));
     world->addItem(make_shared<Sphere>(Vec3{-1,0,-1}, 0.5f, glass));
 
-    Camera cam{Vec3(-2,2,1), Vec3(0,0,-1), Vec3(0,1,0), 30, float(WIDTH)/float(HEIGHT)};
+    Vec3 cameraPos{3,3,2};
+    Vec3 lookAt{0,0,-1};
+    float distToFocus = (cameraPos - lookAt).length();
+    cout << "Focus distance = " << distToFocus << endl;
+    float aperture = 2.0;
+    Camera cam{cameraPos, lookAt, Vec3{0,1,0}, 20, float(WIDTH)/float(HEIGHT), aperture, distToFocus};
 
     cout << "Rendering..." << endl;
     auto start = chrono::steady_clock::now();

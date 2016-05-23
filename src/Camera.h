@@ -6,6 +6,7 @@
 #define RAY0_CAMERA_H
 
 #include "Ray.h"
+#include "Random.h"
 
 class Camera
 {
@@ -13,25 +14,30 @@ class Camera
     Vec3 lowerLeftCorner;
     Vec3 horizontal;
     Vec3 vertical;
+    Vec3 u, v, w;
+    float lensRadius;
 
 public:
-    Camera(Vec3 cameraPos, Vec3 lookAt, Vec3 vUp, float vFov, float aspect) : origin(cameraPos)
+    Camera(Vec3 cameraPos, Vec3 lookAt, Vec3 vUp, float vFov, float aspect, float aperture, float focusDist)
+            : origin(cameraPos), lensRadius(aperture / 2.0f)
     {
         float theta = vFov * M_PI / 180;
         float halfHeight = tan(theta / 2.0);
         float halfWidth = aspect * halfHeight;
-        Vec3 w = unitVector(cameraPos - lookAt);
-        Vec3 u = unitVector(cross(vUp, w));
-        Vec3 v = cross(w, u);
+        w = unitVector(cameraPos - lookAt);
+        u = unitVector(cross(vUp, w));
+        v = cross(w, u);
 
-        lowerLeftCorner = origin - (halfWidth * u) - (halfHeight * v) - w;
-        horizontal = 2 * halfWidth * u;
-        vertical = 2 * halfHeight * v;
+        lowerLeftCorner = origin - (halfWidth * focusDist * u) - (halfHeight * focusDist * v) - w;
+        horizontal = 2 * halfWidth * focusDist * u;
+        vertical = 2 * halfHeight * focusDist * v;
     }
 
-    Ray getRay(float u, float v)
+    Ray getRay(float s, float t)
     {
-        return Ray(origin, lowerLeftCorner + (u * horizontal) + (v * vertical) - origin);
+        Vec3 rd = lensRadius * randomInUnitDisc();
+        Vec3 offset = u * rd.x * v * rd.y;
+        return Ray(origin + offset, lowerLeftCorner + (s * horizontal) + (t * vertical) - origin - offset);
     }
 };
 

@@ -27,4 +27,15 @@ Vec3 randomInUnitSphere()
     return p;
 }
 
+Vec3 randomInUnitDisc()
+{
+    Vec3 p;
+    do
+    {
+        p = 2.0f * Vec3(dRan(), dRan(), 0) - Vec3(1,1,0);
+    }
+    while (dot(p,p) >= 1.0);
+    return p;
+}
+
 #endif //RAY0_RANDOM_H
