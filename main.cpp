@@ -66,7 +66,7 @@ int main() {
     world->addItem(make_shared<Sphere>(Vec3{1,0,-1}, 0.5f, metal1));
     world->addItem(make_shared<Sphere>(Vec3{-1,0,-1}, 0.5f, glass));
 
-    Camera cam{90, float(WIDTH)/float(HEIGHT)};
+    Camera cam{Vec3(-2,2,1), Vec3(0,0,-1), Vec3(0,1,0), 30, float(WIDTH)/float(HEIGHT)};
 
     cout << "Rendering..." << endl;
     auto start = chrono::steady_clock::now();
