@@ -15,12 +15,16 @@ class Camera
     Vec3 vertical;
 
 public:
-    Camera() :
-            origin{0.0, 0.0, 0.0},
-            lowerLeftCorner{-2.0, -1.0, -1.0},
-            horizontal{4.0, 0.0, 0.0},
-            vertical{0.0, 2.0, 0.0}
-    {}
+    Camera(float vFov, float aspect)
+    {
+        float theta = vFov * M_PI / 180;
+        float halfHeight = tan(theta / 2.0);
+        float halfWidth = aspect * halfHeight;
+        lowerLeftCorner = Vec3(-halfWidth, -halfHeight, -1.0);
+        horizontal = Vec3(2 * halfWidth, 0.0, 0.0);
+        vertical = Vec3(0.0, 2 * halfHeight, 0.0);
+        origin = Vec3(0.0, 0.0, 0.0);
+    }
 
     Ray getRay(float u, float v)
     {
